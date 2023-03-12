@@ -1,0 +1,48 @@
+@use '../variables' as *;
+@use '../tools' as *;
+
+html {
+  font-size: 20px;
+}
+
+body {
+  background-color: $color__background--primary !important;
+}
+
+.header__title {
+  font-family: Library3;
+}
+
+.header__description-wrapper {
+  display: inline-block;
+}
+
+.description-wrapper__text--gradient {
+  @include gradient-text($color__text--secondary, $color__text--tertiary);
+}
+
+.gallery__container {
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+
+  @include screen-md {
+
+  };
+}
+
+.error__description {
+  color: $color__text--quaternary;
+}
+
+.loader--spinner {
+  font-family: Library3;
+  font-size: 3rem;
+  animation: 1s color-change infinite;
+}
+
+@keyframes color-change {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}

@@ -5,11 +5,38 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>ATHENA LITE</title>
+
+  <!-- AOS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <body>
+  <header class="container d-flex flex-column align-items-center p-3">
+    <h1 class="text-light header__title">ATHENA LITE</h1>
+    <div>
+      <p class="h1 text-light fw-bold mb-0 header__description-wrapper description-wrapper__text--gradient">Discover</p>
+      <p class="h1 text-light fw-bold mb-0 header__description-wrapper">moments with</p>
+      <p class="h1 text-light fw-bold mb-0 header__description-wrapper description-wrapper__text--gradient">The Beast
+        Artwork</p>
+    </div>
+  </header>
+  <main class="container d-flex flex-column align-items-center p-0" id="main-container">
+    <form class="d-flex flex-column w-100 align-items-center gap-3 mb-3 px-3" id="search-photo-form">
+      <input type="search" class="input-1" placeholder="Nature" name="search-photo-input">
+      <button class="button-1" type="submit">Discover</button>
+    </form>
+    <div class="gallery__container px-3" id="gallery-grid"></div>
+    <span class="text-light loader--spinner" id="spinner">A</span>
+  </main>
 
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      offset: 40
+    });
+  </script>
 </body>
 
 </html>

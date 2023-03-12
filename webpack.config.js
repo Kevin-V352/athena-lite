@@ -17,8 +17,17 @@ module.exports = {
   //* Output point
   output: {
     path: path.join(basePath, distPath),
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
+  //* Dev mode server config
+  devServer: {
+    static: './dist',
+    watchFiles: ['./src']
+  },
+  optimization: {
+    runtimeChunk: 'single',
+  },
+  //* Modules
   module: {
     rules: [
       {
@@ -27,12 +36,32 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.(scss)$/,
         use: [
-            MiniCssExtractPlugin.loader,
-            "css-loader",
-            "sass-loader",
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: () => [
+                  require('autoprefixer')
+                ]
+              }
+            }
+          },
+          {
+            loader: 'sass-loader'
+          }
         ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
       }
     ]
   },
@@ -47,7 +76,6 @@ module.exports = {
   ],
   resolve: {
     //* Order resolution
-    extensions: [ '.ts', '.js' ]
-  },
-  watch: true
+    extensions: ['.ts', '.js']
+  }
 };

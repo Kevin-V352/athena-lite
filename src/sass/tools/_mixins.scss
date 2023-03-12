@@ -1,0 +1,37 @@
+@use '../variables' as *;
+
+@mixin screen-md() {
+  @media screen and (min-width: $breakpoint--md) {
+    @content;
+  }
+}
+
+@mixin screen-lg() {
+  @media screen and (min-width: $breakpoint--lg) {
+    @content;
+  }
+}
+
+@mixin screen-xl() {
+  @media screen and (min-width: $breakpoint--xl) {
+    @content;
+  }
+}
+
+@mixin screen-xxl() {
+  @media screen and (min-width: $breakpoint--xxl) {
+    @content;
+  }
+}
+
+@mixin gradient-text($first-color, $second-color) {
+  background: $first-color;
+  background: linear-gradient(to right, $first-color 0%, $second-color 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin gradient-background($first-color, $second-color) {
+  background: $first-color;
+  background: linear-gradient(90deg, $first-color 0%, $second-color 100%);
+}

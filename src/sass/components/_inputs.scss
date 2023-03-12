@@ -1,0 +1,12 @@
+@use '../variables' as *;
+
+.input-1 {
+  border: $color__border--primary solid 2px;
+  color: $color__text--quaternary;
+  padding: 10px;
+  background-color: transparent;
+  width: 100%;
+  outline: 0;
+  outline-color: transparent;
+  outline-style: none;
+}

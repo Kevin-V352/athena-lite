@@ -1,0 +1,10 @@
+@use '../variables' as *;
+@use '../tools' as *;
+
+.button-1 {
+  border: none;
+  font-weight: 400;
+  color: $color__text--primary;
+  padding: 10px 30px;
+  @include gradient-background($color__text--secondary, $color__text--tertiary);
+}
