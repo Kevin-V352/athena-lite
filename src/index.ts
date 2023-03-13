@@ -155,9 +155,6 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
     return;
   };
 
-  //* We save the results
-  currentResults = [...currentResults, ...photos];
-
   //* No results
   if (photos.length === 0 && currentPage === 1) exceptionHandler('No results...');
 
@@ -167,6 +164,9 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
     $spinner?.remove();
   };
 
+  //* We save the results
+  currentResults = [...currentResults, ...photos];
+
   for (let i = 0; i < photos.length; i += 3) {
     const chunk = photos.slice(i, i + 3);
     generateGalleryRows(chunk);
@@ -175,14 +175,14 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
   currentPage++;
 };
 
-const searchPhotos = async (e: SubmitEvent): Promise<void> => {
+const searchPhotos = async (e: SubmitEvent): Promise<boolean> => {
   e.preventDefault();
-  if (!$galleryGrid) return;
+  if (!$galleryGrid) return false;
 
   const formData = new FormData(e.target as HTMLFormElement);
   const query = formData.get('search-photo-input') as string;
 
-  if (!query || query.trim().length === 0) return;
+  if (!query || query.trim().length === 0) return false;
 
   //* Clear
   lockRequests = false;
@@ -193,9 +193,11 @@ const searchPhotos = async (e: SubmitEvent): Promise<void> => {
   currentQuery = query;
   
   loadGalleryRows(query);
+
+  return false;
 };
 
-const exceptionHandler = (message: string) => {
+const exceptionHandler = (message: string): void => {
   //TODO: resolve retry button bug
   // const $errorDescription = byId('error-description');
 
