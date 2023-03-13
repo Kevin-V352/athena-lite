@@ -37,8 +37,8 @@
 
 <body>
   <header class="container d-flex flex-column align-items-center p-3">
-    <h1 class="text-light header__title">ATHENA LITE</h1>
-    <div class="text-lg-center">
+    <h1 class="text-light header__title" data-aos="zoom-in">ATHENA LITE</h1>
+    <div class="text-lg-center" data-aos="zoom-out" data-aos-delay="100">
       <span class="h1 text-light fw-bold mb-0 description-wrapper__text--gradient">Find&nbsp;</span>
       <span class="h1 text-light fw-bold mb-0">the perfect image with just&nbsp;</span>
       <span class="h1 text-light fw-bold mb-0 description-wrapper__text--gradient">one click</span>
@@ -46,8 +46,8 @@
   </header>
   <main class="container d-flex flex-column align-items-center p-3" id="main-container">
     <form class="d-flex flex-column w-100 align-items-center gap-3 mb-3" id="search-photo-form">
-      <input type="search" class="input-1" placeholder="Nature" name="search-photo-input" required>
-      <button class="button-1 button-1--gradient" type="submit">Discover</button>
+      <input type="search" class="input-1" placeholder="Nature" name="search-photo-input" data-aos="fade-down" data-aos-delay="200" required>
+      <button class="button-1 button-1--gradient" type="submit" data-aos="zoom-in" data-aos-delay="600">Discover</button>
     </form>
     <div class="gallery__container p-0" id="gallery-grid"></div>
     <span class="text-light loader--spinner" id="spinner">A</span>
