@@ -68,7 +68,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       scriptLoading: 'blocking',
-      template: 'src/index.html'
+      template: './src/index.html',
+      favicon: './src/assets/favicon.ico'
     }),
     new MiniCssExtractPlugin({
       filename: 'styles.css'
