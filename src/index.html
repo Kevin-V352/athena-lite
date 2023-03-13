@@ -21,20 +21,29 @@
         Artwork</p>
     </div>
   </header>
-  <main class="container d-flex flex-column align-items-center p-0" id="main-container">
-    <form class="d-flex flex-column w-100 align-items-center gap-3 mb-3 px-3" id="search-photo-form">
-      <input type="search" class="input-1" placeholder="Nature" name="search-photo-input">
-      <button class="button-1" type="submit">Discover</button>
+  <main class="container d-flex flex-column align-items-center p-3" id="main-container">
+    <form class="d-flex flex-column w-100 align-items-center gap-3 mb-3" id="search-photo-form">
+      <input type="search" class="input-1" placeholder="Nature" name="search-photo-input" required>
+      <button class="button-1 button-1--gradient" type="submit">Discover</button>
     </form>
-    <div class="gallery__container px-3" id="gallery-grid"></div>
+    <div class="gallery__container p-0" id="gallery-grid"></div>
     <span class="text-light loader--spinner" id="spinner">A</span>
   </main>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="d-flex flex-column p-3 gap-3 modal__content" id="modal-container"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- AOS -->
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
     AOS.init({
-      offset: 40
+      offset: 40,
+      once: true
     });
   </script>
 </body>
