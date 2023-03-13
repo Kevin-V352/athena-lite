@@ -1,4 +1,12 @@
 @use 'pages';
 @use 'components';
 
-@use "~bootstrap/scss/bootstrap";
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 760px,
+  xl: 800px,
+  xxl: 900px
+);
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";

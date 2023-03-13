@@ -35,3 +35,19 @@
   background: $first-color;
   background: linear-gradient(90deg, $first-color 0%, $second-color 100%);
 }
+
+@mixin webkit__scrollbar {
+  /* Works on Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    background-color: $color__scrollbar-background;
+  };
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $color__scrollbar-thumb;
+  };
+}
+
+@mixin mozilla__scrollbar {
+  /* Works on Firefox */
+  scrollbar-color: $color__scrollbar-thumb $color__scrollbar-background;
+}

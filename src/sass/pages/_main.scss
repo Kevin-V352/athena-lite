@@ -5,6 +5,11 @@ html {
   font-size: 20px;
 }
 
+* {
+  @include mozilla__scrollbar;
+  @include webkit__scrollbar;
+}
+
 body {
   background-color: $color__background--primary !important;
 }
@@ -25,10 +30,6 @@ body {
   margin: 0;
   padding: 10px;
   width: 100%;
-
-  @include screen-md {
-
-  };
 }
 
 .error__description {
@@ -39,6 +40,11 @@ body {
   font-family: Library3;
   font-size: 3rem;
   animation: 1s color-change infinite;
+}
+
+.modal__content {
+  background-color: $color__background--secondary;
+  width: 100%;
 }
 
 @keyframes color-change {

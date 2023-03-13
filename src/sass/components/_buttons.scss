@@ -4,7 +4,21 @@
 .button-1 {
   border: none;
   font-weight: 400;
-  color: $color__text--primary;
   padding: 10px 30px;
-  @include gradient-background($color__text--secondary, $color__text--tertiary);
 }
+
+.button-1--gradient {
+  color: $color__text--primary;
+  @include gradient-background($color__button--primary, $color__button--secondary);
+}
+
+.button-1--outlined {
+  background-color: transparent;
+  border: 2px solid $color__border--primary;
+  color: $color__border--primary;
+}
+
+.button-1--fluid {
+  width: 100%;
+}
+

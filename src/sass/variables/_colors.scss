@@ -1,5 +1,6 @@
 //* Backgrounds ======================================================================
 $color__background--primary: #171717;
+$color__background--secondary: #242424;
 
 //* Texts ============================================================================
 $color__text--primary: #FFF;
@@ -7,5 +8,13 @@ $color__text--secondary: #F86D68;
 $color__text--tertiary: #fB627C;
 $color__text--quaternary: #B9B9B9;
 
-//* Texts ============================================================================
+//* Borders ==========================================================================
 $color__border--primary: #B9B9B9;
+
+//* Buttons ==========================================================================
+$color__button--primary: #F86D68;
+$color__button--secondary: #fB627C;
+
+//* ScrollBars ======================================================================
+$color__scrollbar-background: #171717;
+$color__scrollbar-thumb: #242424;
