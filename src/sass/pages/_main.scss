@@ -18,10 +18,6 @@ body {
   font-family: Library3;
 }
 
-.header__description-wrapper {
-  display: inline-block;
-}
-
 .description-wrapper__text--gradient {
   @include gradient-text($color__text--secondary, $color__text--tertiary);
 }

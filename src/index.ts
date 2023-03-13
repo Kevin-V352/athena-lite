@@ -38,12 +38,12 @@ const $bootstrapModalContent = byId('modal-container') as HTMLDivElement | null;
 //* Constants
 const client = createClient(process.env.PEXELS_API_KEY || '');
 let currentPage: number = 1;
-let currentQuery: string = 'Abstract';
+let currentQuery: string = 'Landscape';
 let lockRequests: boolean = false;
 let currentResults: Photo[] = [];
 
 //* Functions
-const getImages = async (query: string = 'Abstract', page: number = 1): Promise<{ data: Photo[] | null; error: any | null; }> => {
+const getImages = async (query: string = 'Landscape', page: number = 1): Promise<{ data: Photo[] | null; error: any | null; }> => {
   try {
     const response = await client.photos.search({ 
       query, 
@@ -226,7 +226,7 @@ const exceptionHandler = (message: string) => {
   
 };
 
-async function toDataURL(url: string) {
+const toDataURL = async (url: string) => {
   const blob = await fetch(url).then(res => res.blob());
   return URL.createObjectURL(blob);
 };
