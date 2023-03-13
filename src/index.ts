@@ -36,7 +36,7 @@ const $bootstrapModal = new Modal(byId('exampleModal') || '', {});
 const $bootstrapModalContent = byId('modal-container') as HTMLDivElement | null;
 
 //* Constants
-const client = createClient('xLd9FSfM3K3fk53yaaan0J1clzgFouPHjwjMrbz32XZfXfE9uIglCLeN');
+const client = createClient(process.env.PEXELS_API_KEY || '');
 let currentPage: number = 1;
 let currentQuery: string = 'Abstract';
 let lockRequests: boolean = false;
