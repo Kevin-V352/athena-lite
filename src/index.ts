@@ -1,8 +1,8 @@
 //* Custom Sass
 import './sass/app.scss';
 
-//* Bootstrap JS
-import * as bootstrap from 'bootstrap';
+//* Bootstrap JS - ONLY JS MODULES
+import Modal from 'bootstrap/js/dist/modal';
 
 //* Others
 import { createClient, Photo } from 'pexels';
@@ -32,7 +32,7 @@ const $galleryGrid = byId('gallery-grid') as HTMLDivElement | null;
 const $searchPhotoForm = byId('search-photo-form') as HTMLFormElement | null;
 const $spinner = byId('spinner') as HTMLSpanElement | null;
 const $mainContainer = byId('main-container') as HTMLDivElement | null;
-const $bootstrapModal = new bootstrap.Modal(byId('exampleModal') || '', {});
+const $bootstrapModal = new Modal(byId('exampleModal') || '', {});
 const $bootstrapModalContent = byId('modal-container') as HTMLDivElement | null;
 
 //* Constants

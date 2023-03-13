@@ -1,6 +1,9 @@
 @use 'pages';
 @use 'components';
 
+// Required
+@import "../../node_modules/bootstrap/scss/functions";
+
 $container-max-widths: (
   sm: 540px,
   md: 720px,
@@ -9,4 +12,18 @@ $container-max-widths: (
   xxl: 900px
 );
 
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+// Required
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/maps";
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "../../node_modules/bootstrap/scss/root";
+
+// Optional Bootstrap components here
+@import "../../node_modules/bootstrap/scss/containers";
+@import "../../node_modules/bootstrap/scss/grid";
+@import "../../node_modules/bootstrap/scss/reboot";
+@import "../../node_modules/bootstrap/scss/type";
+@import "../../node_modules/bootstrap/scss/utilities";
+@import "../../node_modules/bootstrap/scss/utilities/api";
+@import "../../node_modules/bootstrap/scss/modal";
+@import "../../node_modules/bootstrap/scss/transitions";
