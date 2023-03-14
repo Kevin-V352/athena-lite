@@ -22,18 +22,18 @@ interface Scr {
 //* Utils
 const byId = (id: string) => document.getElementById(id);
 const removeAllChildNodes = (parent: HTMLElement): void => {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  };
+  parent.innerHTML = '';
 };
 
 //* Elements
-const $galleryGrid = byId('gallery-grid') as HTMLDivElement | null;
-const $searchPhotoForm = byId('search-photo-form') as HTMLFormElement | null;
-const $spinner = byId('spinner') as HTMLSpanElement | null;
+//? Normally I would have all the elements of the document listed in this position, however, 
+//? for some reason I don't know, the selectors declared in the global scope tend to malfunction 
+//? or their entries don't work.
+
 const $mainContainer = byId('main-container') as HTMLDivElement | null;
 const $bootstrapModal = new Modal(byId('exampleModal') || '', {});
 const $bootstrapModalContent = byId('modal-container') as HTMLDivElement | null;
+
 
 //* Constants
 const client = createClient(process.env.PEXELS_API_KEY || '');
@@ -45,8 +45,8 @@ let currentResults: Photo[] = [];
 //* Functions
 const getImages = async (query: string = 'Landscape', page: number = 1): Promise<{ data: Photo[] | null; error: any | null; }> => {
   try {
-    const response = await client.photos.search({ 
-      query, 
+    const response = await client.photos.search({
+      query,
       page,
       per_page: 18
     });
@@ -73,6 +73,8 @@ const generateSinglePhoto = (src: Scr, alt: string | null, id: number): string =
 );
 
 const generateGalleryRows = (images: Photo[]): void => {
+  const $galleryGrid = byId('gallery-grid') as HTMLDivElement | null;
+
   if (!$galleryGrid) return;
 
   const options = [1, 2, 3];
@@ -99,9 +101,9 @@ const generateGalleryRows = (images: Photo[]): void => {
 
         </div>
       `;
-    break;
+      break;
 
-    case 2: 
+    case 2:
       rowTemplate = `
         <div class="row gx-1 mb-1">
 
@@ -118,8 +120,8 @@ const generateGalleryRows = (images: Photo[]): void => {
 
         </div>
     `;
-    break;
-  
+      break;
+
     default:
       rowTemplate = `
         <div class="row mb-1 gx-1">
@@ -140,7 +142,7 @@ const generateGalleryRows = (images: Photo[]): void => {
       `;
   };
 
-  $galleryGrid.innerHTML += rowTemplate;
+  $galleryGrid.innerHTML += (rowTemplate);
 };
 
 const loadGalleryRows = async (query?: string): Promise<void> => {
@@ -150,18 +152,32 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
 
   //* Fetch error
   if (!photos) {
-    exceptionHandler('An error has occurred while trying to obtain the images. Please, check your internet connection and try again later');
     lockRequests = true;
+    renderSpinner(false);
+    renderAlert(
+      true,
+      'fetch-error',
+      'An error has occurred while trying to obtain the images. Please, check your internet connection and try again later'
+    );
     return;
   };
 
   //* No results
-  if (photos.length === 0 && currentPage === 1) exceptionHandler('No results...');
+  if (photos.length === 0 && currentPage === 1) {
+    lockRequests = true;
+    renderSpinner(false);
+    renderAlert(
+      true,
+      'no-results',
+      'No results...'
+    );
+    return;
+  };
 
   //* No more results
   if (photos.length <= 3) {
     lockRequests = true;
-    $spinner?.remove();
+    renderSpinner(false);
   };
 
   //* We save the results
@@ -175,67 +191,111 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
   currentPage++;
 };
 
-const searchPhotos = async (e: SubmitEvent): Promise<boolean> => {
-  e.preventDefault();
-  if (!$galleryGrid) return false;
-
-  const formData = new FormData(e.target as HTMLFormElement);
-  const query = formData.get('search-photo-input') as string;
-
-  if (!query || query.trim().length === 0) return false;
-
-  //* Clear
-  lockRequests = false;
-  $searchPhotoForm?.reset();
-  removeAllChildNodes($galleryGrid);
-  currentResults = [];
-  currentPage = 1;
-  currentQuery = query;
-  
-  loadGalleryRows(query);
-
-  return false;
-};
-
-const exceptionHandler = (message: string): void => {
-  //TODO: resolve retry button bug
-  // const $errorDescription = byId('error-description');
-
-  if (!$mainContainer) return;
-
-  $spinner?.remove();
-
-  $mainContainer.innerHTML += (`
-    <span 
-      class="my-3 error__description"
-      id="error-description"
-      data-aos="fade-up"
-      data-aos-once="false"
-    >
-      ${message}
-    </span>
-  `);
-
-  //TODO: resolve retry button bug
-  /* <button 
-      class="mb-3 button-1" 
-      type="button"
-      id="error-retry-button"
-      onclick="retryLoadData()"
-    >
-      Retry
-    </button> */
-  
-};
-
 const toDataURL = async (url: string) => {
   const blob = await fetch(url).then(res => res.blob());
   return URL.createObjectURL(blob);
 };
 
+const renderSpinner = (render: boolean): void => {
+  if (!$mainContainer) return;
+
+  const $spinnerExist = document.getElementById('spinner') as HTMLSpanElement | null;
+
+  if ($spinnerExist && render) return;
+  if (!$spinnerExist && !render) return;
+
+  if (render) $mainContainer.innerHTML += `<span class="text-light loader--spinner" id="spinner">A</span>`;
+  else $spinnerExist?.remove();
+};
+
+const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', message?: string): void => {
+  if (!$mainContainer) return;
+
+  const $alertDescription = byId('error-description') as HTMLSpanElement | null;
+  const $errorRetryButton = byId('error-retry-button') as HTMLButtonElement | null;
+
+  if (render) {
+    switch (type) {
+      case 'no-results':
+        $mainContainer.innerHTML += (`
+          <span 
+            class="my-3 error__description"
+            id="error-description"
+            data-aos="fade-up"
+            data-aos-once="false"
+          >
+            ${message}
+          </span>
+        `);
+        break;
+
+      default:
+        $mainContainer.innerHTML += (`
+          <span 
+            class="my-3 error__description"
+            id="error-description"
+            data-aos="fade-up"
+            data-aos-once="false"
+          >
+            ${message}
+          </span>
+        `);
+
+        $mainContainer.innerHTML += (`
+          <button 
+            class="mb-3 button-1 button-1--gradient" 
+            type="button"
+            id="error-retry-button"
+            onclick="retryLoadData()"
+            data-aos="fade-up"
+            data-aos-once="false"
+          > 
+            Retry
+          </button>
+        `); 
+    };
+  } else {
+    $alertDescription?.remove();
+    $errorRetryButton?.remove();
+  };
+};
+
+const initialLoad = async () => {
+  await loadGalleryRows(currentQuery);
+  renderSpinner(true);
+};
+
+// @ts-ignore
+window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
+  e.preventDefault();
+
+  const $galleryGrid = byId('gallery-grid') as HTMLDivElement | null;
+  const $searchPhotoForm = byId('search-photo-form') as HTMLFormElement | null;
+
+  if (!$galleryGrid || !$searchPhotoForm) return;
+
+  const formData = new FormData(e.target as HTMLFormElement);
+  const query = formData.get('search-photo-input') as string;
+
+  if (!query || query.trim().length === 0) return;
+
+  //* Clear
+  lockRequests = false;
+  currentResults = [];
+  currentPage = 1;
+  currentQuery = query;
+  $searchPhotoForm.reset();
+  removeAllChildNodes($galleryGrid);
+  renderAlert(false);
+  renderSpinner(true);
+  
+  //* Get and display
+  await loadGalleryRows(query);
+};
+
 // @ts-ignore
 window.downloadImage = async (url: string, alt: string): Promise<void> => {
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = await toDataURL(url);
   a.download = alt;
   document.body.appendChild(a);
@@ -248,10 +308,10 @@ window.createAndOpenModal = (id: number): void => {
   if (!$bootstrapModalContent) return;
 
   const photoToDownload = currentResults.find((photo) => photo.id === id);
-  
+
   if (!photoToDownload) return;
 
-  const { alt, src: { large2x, original, large, medium, small, portrait, landscape, tiny  } } = photoToDownload;
+  const { alt, src: { large2x, original, large, medium, small, portrait, landscape, tiny } } = photoToDownload;
 
   $bootstrapModalContent.innerHTML = (`
     <img src="${large2x}" alt="${alt}" class="image-1--aspect-ratio" />
@@ -296,17 +356,16 @@ window.createAndOpenModal = (id: number): void => {
 // @ts-ignore
 window.retryLoadData = (): void => {
   lockRequests = false;
+  renderAlert(false);
   loadGalleryRows(currentQuery);
 };
 
 //* Listeners
 window.addEventListener('scroll', () => {
-  if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+  if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
     loadGalleryRows(currentQuery);
   };
 });
 
-$searchPhotoForm?.addEventListener('submit', searchPhotos);
-
 //* Initial load
-loadGalleryRows(currentQuery);
+initialLoad();
