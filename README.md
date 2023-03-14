@@ -10,7 +10,8 @@ The project is in its last stage of development, so it may present some errors. 
 [Let's go! 🌐](https://athena-lite-kv357.netlify.app/) 
 
 ## Technologies
-- [X] ![10](https://i.ibb.co/hXmqN5t/typescript.png) TypeScript
+- [X] ![10](https://res.cloudinary.com/dqvjsgezk/image/upload/v1678802237/common-assets/icons/rav2lbcgdnitakadmpsc.png) Webpack 5
+- [X] ![11](https://i.ibb.co/hXmqN5t/typescript.png) TypeScript
 - [X] ![12](https://i.ibb.co/Bq8HY9F/sass.png) Sass
 - [X] ![13](https://i.ibb.co/H4RntNH/bootstrap.png) Bootstrap
 
