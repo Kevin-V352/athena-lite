@@ -1,0 +1,35 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": "standard-with-typescript",
+    "overrides": [
+        {
+            "files": [ "./src/**/*.ts" ],
+            "rules": {
+                "semi": [
+                    "error",
+                    "always"
+                ],
+                "@typescript-eslint/semi": "off",
+                "@typescript-eslint/strict-boolean-expressions": "off",
+                "padded-blocks": [
+                    "error",
+                    "always"
+                ],
+                "key-spacing": [
+                    "error",
+                    {
+                        "align": "value"
+                    }
+                ]
+            }
+        }
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": ["./tsconfig.json"]
+    }
+}
