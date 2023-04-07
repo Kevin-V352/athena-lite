@@ -7,39 +7,24 @@ import './sass/app.scss';
 import Modal from 'bootstrap/js/dist/modal';
 
 //* Others
-import { createClient, type Photo } from 'pexels';
-
-//* Interfaces
-interface Scr {
-  original: string
-  large2x: string
-  large: string
-  medium: string
-  small: string
-  portrait: string
-  landscape: string
-  tiny: string
-};
+import { type Photo } from 'pexels';
 
 //* Utils
-const byId = (id: string): HTMLElement | null => document.getElementById(id);
-const removeAllChildNodes = (parent: HTMLElement): void => {
+import { nodeModifiers, selectors } from './utils';
 
-  parent.innerHTML = '';
-
-};
+//* APIs
+import { pexelsAPI } from './APIs';
 
 //* Elements
 // ? Normally I would have all the elements of the document listed in this position, however,
 // ? for some reason I don't know, the selectors declared in the global scope tend to malfunction
 // ? or their entries don't work.
 
-const $mainContainer = byId('main-container') as HTMLDivElement | null;
-const $bootstrapModal = new Modal((byId('exampleModal') ?? ''), {});
-const $bootstrapModalContent = byId('modal-container') as HTMLDivElement | null;
+const $mainContainer = selectors.byId('main-container') as HTMLDivElement | null;
+const $bootstrapModal = new Modal((selectors.byId('exampleModal') ?? ''), {});
+const $bootstrapModalContent = selectors.byId('modal-container') as HTMLDivElement | null;
 
 //* Constants
-const client = createClient(process.env.PEXELS_API_KEY ?? '');
 let currentPage: number = 1;
 let currentQuery: string = 'Landscape';
 let lockRequests: boolean = false;
@@ -50,7 +35,7 @@ const getImages = async (query: string = 'Landscape', page: number = 1): Promise
 
   try {
 
-    const response = await client.photos.search({
+    const response = await pexelsAPI.photos.search({
       query,
       page,
       per_page: 18
@@ -71,7 +56,7 @@ const getImages = async (query: string = 'Landscape', page: number = 1): Promise
 
 };
 
-const generateSinglePhoto = (src: Scr, alt: string | null, id: number): string => (
+const generateSinglePhoto = (src: Photo['src'], alt: string | null, id: number): string => (
   `<img 
     src="${src.large2x}" 
     class="image-1--aspect-ratio image-1--selectable" 
@@ -83,7 +68,7 @@ const generateSinglePhoto = (src: Scr, alt: string | null, id: number): string =
 
 const generateGalleryRows = (images: Photo[]): void => {
 
-  const $galleryGrid = byId('gallery-grid') as HTMLDivElement | null;
+  const $galleryGrid = selectors.byId('gallery-grid') as HTMLDivElement | null;
 
   if (!$galleryGrid) return;
 
@@ -239,8 +224,8 @@ const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', messa
 
   if (!$mainContainer) return;
 
-  const $alertDescription = byId('error-description') as HTMLSpanElement | null;
-  const $errorRetryButton = byId('error-retry-button') as HTMLButtonElement | null;
+  const $alertDescription = selectors.byId('error-description') as HTMLSpanElement | null;
+  const $errorRetryButton = selectors.byId('error-retry-button') as HTMLButtonElement | null;
 
   if (render && message) {
 
@@ -307,8 +292,8 @@ window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
 
   e.preventDefault();
 
-  const $galleryGrid = byId('gallery-grid') as HTMLDivElement | null;
-  const $searchPhotoForm = byId('search-photo-form') as HTMLFormElement | null;
+  const $galleryGrid = selectors.byId('gallery-grid') as HTMLDivElement | null;
+  const $searchPhotoForm = selectors.byId('search-photo-form') as HTMLFormElement | null;
 
   if (!$galleryGrid || !$searchPhotoForm) return;
 
@@ -323,7 +308,7 @@ window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
   currentPage = 1;
   currentQuery = query;
   $searchPhotoForm.reset();
-  removeAllChildNodes($galleryGrid);
+  nodeModifiers.removeAllChildNodes($galleryGrid);
   renderAlert(false);
   renderSpinner(true);
 
