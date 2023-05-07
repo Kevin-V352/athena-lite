@@ -5,6 +5,7 @@ import './sass/app.scss';
 
 //* Bootstrap JS - ONLY JS MODULES
 import Modal from 'bootstrap/js/dist/modal';
+import Toast from 'bootstrap/js/dist/toast';
 
 //* Others
 import { type Photo } from 'pexels';
@@ -21,8 +22,9 @@ import { pexelsAPI } from './APIs';
 // ? or their entries don't work.
 
 const $mainContainer = selectors.byId('main-container') as HTMLDivElement | null;
-const $bootstrapModal = new Modal((selectors.byId('exampleModal') ?? ''), {});
-const $bootstrapModalContent = selectors.byId('modal-container') as HTMLDivElement | null;
+const $bootstrapModal = new Modal((selectors.byId('previewModal') ?? ''), {});
+const $bootstrapModalContent = selectors.byId('previewModalContent') as HTMLDivElement | null;
+const $bootstrapToast = selectors.byId('alertToast') as HTMLDivElement | null;
 
 //* Constants
 let currentPage: number = 1;
@@ -199,10 +201,19 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
 
 };
 
-const toDataURL = async (url: string): Promise<string> => {
+const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => {
 
-  const blob = await fetch(url).then(async res => await res.blob());
-  return URL.createObjectURL(blob);
+  try {
+
+    const blob = await fetch(url).then(async res => await res.blob());
+    return [URL.createObjectURL(blob), null];
+
+  } catch (error) {
+
+    console.error(error);
+    return [null, error];
+
+  };
 
 };
 
@@ -280,6 +291,20 @@ const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', messa
 
 };
 
+const renderToast = (text: string, icon: string, iconVariant: string): void => {
+
+  if (!$bootstrapToast) return;
+
+  $bootstrapToast.innerHTML = (`
+    <i class="${iconVariant} ${icon} toast-1__type-icon"></i>
+    <span class="toast-1__text">${text}</span>
+  `);
+
+  const toastBootstrap = Toast.getOrCreateInstance($bootstrapToast);
+  toastBootstrap.show();
+
+};
+
 const initialLoad = async (): Promise<void> => {
 
   await loadGalleryRows(currentQuery);
@@ -320,8 +345,21 @@ window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
 // @ts-expect-error
 window.downloadImage = async (url: string, alt: string): Promise<void> => {
 
+  const [photoHref] = await toDataURL(url);
+
+  if (!photoHref) {
+
+    renderToast(
+      'An error has occurred while trying to download the image',
+      'fa-triangle-exclamation',
+      'fa-solid'
+    );
+    return;
+
+  };
+
   const a = document.createElement('a');
-  a.href = await toDataURL(url);
+  a.href = photoHref;
   a.download = alt;
   document.body.appendChild(a);
   a.click();
