@@ -1,0 +1,37 @@
+@use '../variables' as *;
+@use '../tools' as *;
+
+.toast-1 {
+  @include gradient-background($color__button--primary, $color__button--secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-radius: 0px !important;
+
+  @include screen-md() {
+    display: grid;
+    gap: 20px;
+    align-items: center;
+    grid-template-areas: 'type-icon desc';
+  };
+}
+
+.toast-1__text {
+  text-align: center;
+  color: $color__text--quinary;
+
+  @include screen-md() {
+    text-align: initial;
+  };
+}
+
+.toast-1__type-icon {
+  font-size: 2rem;
+  grid-area: type-icon;
+  color: $color__icon--primary;
+
+  @include screen-md() {
+    font-size: 1rem;
+  };
+}
