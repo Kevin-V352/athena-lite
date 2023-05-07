@@ -31,5 +31,6 @@
         "ecmaVersion": "latest",
         "sourceType": "module",
         "project": ["./tsconfig.json"]
-    }
+    },
+    "ignorePatterns": ["**/*.js"]
 }
