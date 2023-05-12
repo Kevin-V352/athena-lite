@@ -26,14 +26,50 @@ const $bootstrapModal = new Modal((selectors.byId('previewModal') ?? ''), {});
 const $bootstrapModalContent = selectors.byId('previewModalContent') as HTMLDivElement | null;
 const $bootstrapToast = selectors.byId('alertToast') as HTMLDivElement | null;
 
-//* Constants
+//* Globals variables
+/**
+ * Current page number of the images.
+ * @category Global variables
+ * @var {number}
+ * @default 1
+ */
 let currentPage: number = 1;
+
+/**
+ * Search term for images.
+ * @category Global variables
+ * @var {string}
+ * @default Landscape
+ */
 let currentQuery: string = 'Landscape';
+
+/**
+ * Boolean that indicates if the image request process should be blocked.
+ * @category Global variables
+ * @var {boolean}
+ * @default false
+ */
 let lockRequests: boolean = false;
+
+/**
+ * Array where the user's search results are stored.
+ * @category Global variables
+ * @var {Array<Photo>}
+ * @default []
+ */
 let currentResults: Photo[] = [];
 
 //* Functions
-const getImages = async (query: string = 'Landscape', page: number = 1): Promise<{ data: Photo[] | null, error: any | null }> => {
+/**
+ *  Gets a list of images based on the search term.
+ *  @async
+ *  @category Functions
+ *  @subcategory Getters
+ *  @param {string} query Search term.
+ *  @param {number} page Page number.
+ *  @returns {Promise<Array<Array.<Photo>, null>> | Promise<Array<null, any>>} Returns an array with two elements, the first element will have a list of objects (fetched from the pexels API) and the second an error (in case the request fails).
+ */
+const getImages = async (query: string = 'Landscape', page: number = 1): Promise<[Photo[], null] | [null, any]> => {
 
   try {
 
@@ -43,21 +79,29 @@ const getImages = async (query: string = 'Landscape', page: number = 1): Promise
       per_page: 18
     });
 
-    if ('error' in response) return { data: null, error: response.error };
+    if ('error' in response) return [null, response.error];
 
     const { photos } = response;
 
-    return { data: photos, error: null };
+    return [photos, null];
 
   } catch (error) {
 
     console.error(error);
-    return { data: null, error };
+    return [null, error];
 
   };
 
 };
 
+/**
+ * Generates an "img" element formatted with the received arguments.
+ * @category Functions
+ * @param {Photo.src} src Photo link.
+ * @param {strin | null} alt Photo name.
+ * @param {number} id Photo ID.
+ * @returns {string} Returns an "img" element in string format.
+ */
 const generateSinglePhoto = (src: Photo['src'], alt: string | null, id: number): string => (
   `<img 
     src="${src.large2x}" 
@@ -68,6 +112,11 @@ const generateSinglePhoto = (src: Photo['src'], alt: string | null, id: number):
   />`
 );
 
+/**
+ * Generates rows of images that are dynamically loaded into the main grid.
+ * @category Functions
+ * @param {Array<Photo>} images Array of objects "Photo".
+ */
 const generateGalleryRows = (images: Photo[]): void => {
 
   const $galleryGrid = selectors.byId('gallery-grid') as HTMLDivElement | null;
@@ -145,11 +194,17 @@ const generateGalleryRows = (images: Photo[]): void => {
 
 };
 
+/**
+ * Triggers the action of searching for photos and loading them into the main grid.
+ * @async
+ * @category Functions
+ * @param {string | undefined} query Search term.
+ */
 const loadGalleryRows = async (query?: string): Promise<void> => {
 
   if (lockRequests) return;
 
-  const { data: photos } = await getImages(query, currentPage);
+  const [photos] = await getImages(query, currentPage);
 
   //* Fetch error
   if (!photos) {
@@ -201,6 +256,12 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
 
 };
 
+/**
+ * Generates a link to facilitate downloading images to the client.
+ * @category Functions
+ * @param {string} url Image web link.
+ * @returns {Promise<Array<string, null>> | Promise<Array<null, any>>} Returns a promise containing an array with two elements, the first element will have a link to facilitate image download (promise successfully resolved) and the second an error (in case the promise fails).
+ */
 const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => {
 
   try {
@@ -217,6 +278,11 @@ const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => 
 
 };
 
+/**
+ * Render or remove the load spinner.
+ * @category Functions
+ * @param {boolean} render Boolean indicating whether the load spinner should be displayed.
+ */
 const renderSpinner = (render: boolean): void => {
 
   if (!$mainContainer) return;
@@ -231,6 +297,13 @@ const renderSpinner = (render: boolean): void => {
 
 };
 
+/**
+ * Renders or removes an alert in the footer.
+ * @category Functions
+ * @param {boolean} render Boolean indicating whether the alert should be displayed.
+ * @param {('no-results' | 'fetch-error')} type Type of alert to display.
+ * @param {string | undefined} message Text message to be displayed in the alert.
+ */
 const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', message?: string): void => {
 
   if (!$mainContainer) return;
@@ -291,6 +364,13 @@ const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', messa
 
 };
 
+/**
+ * Triggers the rendering of a notification.
+ * @category Functions
+ * @param {string} text Text message to be displayed in the notification.
+ * @param {string} icon Icon class from FontAwesome.
+ * @param {string} iconVariant Class for the icon variant from FontAwesome.
+ */
 const renderToast = (text: string, icon: string, iconVariant: string): void => {
 
   if (!$bootstrapToast) return;
@@ -305,6 +385,11 @@ const renderToast = (text: string, icon: string, iconVariant: string): void => {
 
 };
 
+/**
+ * Triggers the initial content load.
+ * @async
+ * @category Functions
+ */
 const initialLoad = async (): Promise<void> => {
 
   await loadGalleryRows(currentQuery);
@@ -312,8 +397,13 @@ const initialLoad = async (): Promise<void> => {
 
 };
 
-// @ts-expect-error
-window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
+/**
+ * Triggers image search when the user uses the search bar.
+ * @async
+ * @category Functions
+ * @param {SubmitEvent} e Form event
+ */
+const searchPhotos = async (e: SubmitEvent): Promise<void> => {
 
   e.preventDefault();
 
@@ -342,8 +432,14 @@ window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
 
 };
 
-// @ts-expect-error
-window.downloadImage = async (url: string, alt: string): Promise<void> => {
+/**
+ * Download an image to the client's device.
+ * @async
+ * @category Functions
+ * @param {string} url Link to the image to be saved on the client's device.
+ * @param {string} alt Name of the file to be saved on the client's device.
+ */
+const downloadImage = async (url: string, alt: string): Promise<void> => {
 
   const [photoHref] = await toDataURL(url);
 
@@ -367,8 +463,12 @@ window.downloadImage = async (url: string, alt: string): Promise<void> => {
 
 };
 
-// @ts-expect-error
-window.createAndOpenModal = (id: number): void => {
+/**
+ * Render a modal with multiple download options for an image.
+ * @category Functions
+ * @param {number} id
+ */
+const createAndOpenModal = (id: number): void => {
 
   if (!$bootstrapModalContent) return;
 
@@ -419,8 +519,12 @@ window.createAndOpenModal = (id: number): void => {
 
 };
 
-// @ts-expect-error
-window.retryLoadData = async (): void => {
+/**
+ * Continues downloading images in case the download was paused due to a connection error.
+ * @async
+ * @category Functions
+ */
+const retryLoadData = async (): Promise<void> => {
 
   lockRequests = false;
   renderAlert(false);
@@ -428,9 +532,12 @@ window.retryLoadData = async (): void => {
 
 };
 
-//* Listeners
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-window.addEventListener('scroll', async (): Promise<void> => {
+/**
+ * Triggers the generation of new images for the main grid when the user is at a specific position on the Y-axis of the screen.
+ * @async
+ * @category Functions
+ */
+const infiniteScroll = async (): Promise<void> => {
 
   if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
 
@@ -438,7 +545,23 @@ window.addEventListener('scroll', async (): Promise<void> => {
 
   };
 
-});
+};
+
+// @ts-expect-error
+window.searchPhotos = searchPhotos;
+
+// @ts-expect-error
+window.downloadImage = downloadImage;
+
+// @ts-expect-error
+window.createAndOpenModal = createAndOpenModal;
+
+// @ts-expect-error
+window.retryLoadData = retryLoadData;
+
+//* Listeners
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+window.addEventListener('scroll', infiniteScroll);
 
 //* Initial load
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

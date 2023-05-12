@@ -1,6 +1,9 @@
 # dependencies
 /node_modules
 
+#docs
+/docs
+
 #production
 /dist
 

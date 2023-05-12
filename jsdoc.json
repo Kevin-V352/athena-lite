@@ -1,0 +1,29 @@
+{
+  "opts": {
+    "template": "node_modules/better-docs",
+    "destination": "./docs",
+    "encoding": "utf8",
+    "readme": "./README.md"
+  },
+  "tags": {
+    "allowUnknownTags": ["optional", "category"]
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/better-docs/typescript",
+    "node_modules/better-docs/category"
+  ],
+  "source": {
+    "include": ["./src"],
+    "includePattern": "\\.(js|ts)$",
+    "exlude": "node_modules/|docs"
+  },
+  "templates": {
+    "search": true,
+    "better-docs": {
+      "title": "ATHENA | DOCS |",
+      "logo": "https://res.cloudinary.com/dqvjsgezk/image/upload/v1683686509/athena-lite-assets/crvkjcptdykltawgbr5f.png",
+      "css": "./docs.style.css"
+    }
+  }
+}
