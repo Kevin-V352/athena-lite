@@ -29,7 +29,6 @@ const $bootstrapToast = selectors.byId('alertToast') as HTMLDivElement | null;
 //* Globals variables
 /**
  * Current page number of the images.
- * @category Global variables
  * @var {number}
  * @default 1
  */
@@ -37,7 +36,6 @@ let currentPage: number = 1;
 
 /**
  * Search term for images.
- * @category Global variables
  * @var {string}
  * @default Landscape
  */
@@ -45,7 +43,6 @@ let currentQuery: string = 'Landscape';
 
 /**
  * Boolean that indicates if the image request process should be blocked.
- * @category Global variables
  * @var {boolean}
  * @default false
  */
@@ -53,7 +50,6 @@ let lockRequests: boolean = false;
 
 /**
  * Array where the user's search results are stored.
- * @category Global variables
  * @var {Array<Photo>}
  * @default []
  */
@@ -63,8 +59,6 @@ let currentResults: Photo[] = [];
 /**
  *  Gets a list of images based on the search term.
  *  @async
- *  @category Functions
- *  @subcategory Getters
  *  @param {string} query Search term.
  *  @param {number} page Page number.
  *  @returns {Promise<Array<Array.<Photo>, null>> | Promise<Array<null, any>>} Returns an array with two elements, the first element will have a list of objects (fetched from the pexels API) and the second an error (in case the request fails).
@@ -96,7 +90,6 @@ const getImages = async (query: string = 'Landscape', page: number = 1): Promise
 
 /**
  * Generates an "img" element formatted with the received arguments.
- * @category Functions
  * @param {Photo.src} src Photo link.
  * @param {strin | null} alt Photo name.
  * @param {number} id Photo ID.
@@ -114,7 +107,6 @@ const generateSinglePhoto = (src: Photo['src'], alt: string | null, id: number):
 
 /**
  * Generates rows of images that are dynamically loaded into the main grid.
- * @category Functions
  * @param {Array<Photo>} images Array of objects "Photo".
  */
 const generateGalleryRows = (images: Photo[]): void => {
@@ -197,7 +189,6 @@ const generateGalleryRows = (images: Photo[]): void => {
 /**
  * Triggers the action of searching for photos and loading them into the main grid.
  * @async
- * @category Functions
  * @param {string | undefined} query Search term.
  */
 const loadGalleryRows = async (query?: string): Promise<void> => {
@@ -258,7 +249,6 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
 
 /**
  * Generates a link to facilitate downloading images to the client.
- * @category Functions
  * @param {string} url Image web link.
  * @returns {Promise<Array<string, null>> | Promise<Array<null, any>>} Returns a promise containing an array with two elements, the first element will have a link to facilitate image download (promise successfully resolved) and the second an error (in case the promise fails).
  */
@@ -280,7 +270,6 @@ const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => 
 
 /**
  * Render or remove the load spinner.
- * @category Functions
  * @param {boolean} render Boolean indicating whether the load spinner should be displayed.
  */
 const renderSpinner = (render: boolean): void => {
@@ -299,7 +288,6 @@ const renderSpinner = (render: boolean): void => {
 
 /**
  * Renders or removes an alert in the footer.
- * @category Functions
  * @param {boolean} render Boolean indicating whether the alert should be displayed.
  * @param {('no-results' | 'fetch-error')} type Type of alert to display.
  * @param {string | undefined} message Text message to be displayed in the alert.
@@ -366,7 +354,6 @@ const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', messa
 
 /**
  * Triggers the rendering of a notification.
- * @category Functions
  * @param {string} text Text message to be displayed in the notification.
  * @param {string} icon Icon class from FontAwesome.
  * @param {string} iconVariant Class for the icon variant from FontAwesome.
@@ -388,7 +375,6 @@ const renderToast = (text: string, icon: string, iconVariant: string): void => {
 /**
  * Triggers the initial content load.
  * @async
- * @category Functions
  */
 const initialLoad = async (): Promise<void> => {
 
@@ -400,7 +386,6 @@ const initialLoad = async (): Promise<void> => {
 /**
  * Triggers image search when the user uses the search bar.
  * @async
- * @category Functions
  * @param {SubmitEvent} e Form event
  */
 const searchPhotos = async (e: SubmitEvent): Promise<void> => {
@@ -435,7 +420,6 @@ const searchPhotos = async (e: SubmitEvent): Promise<void> => {
 /**
  * Download an image to the client's device.
  * @async
- * @category Functions
  * @param {string} url Link to the image to be saved on the client's device.
  * @param {string} alt Name of the file to be saved on the client's device.
  */
@@ -465,7 +449,6 @@ const downloadImage = async (url: string, alt: string): Promise<void> => {
 
 /**
  * Render a modal with multiple download options for an image.
- * @category Functions
  * @param {number} id
  */
 const createAndOpenModal = (id: number): void => {
@@ -522,7 +505,6 @@ const createAndOpenModal = (id: number): void => {
 /**
  * Continues downloading images in case the download was paused due to a connection error.
  * @async
- * @category Functions
  */
 const retryLoadData = async (): Promise<void> => {
 
@@ -535,7 +517,6 @@ const retryLoadData = async (): Promise<void> => {
 /**
  * Triggers the generation of new images for the main grid when the user is at a specific position on the Y-axis of the screen.
  * @async
- * @category Functions
  */
 const infiniteScroll = async (): Promise<void> => {
 

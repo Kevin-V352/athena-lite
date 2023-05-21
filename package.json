@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --open --mode=development",
     "build": "rimraf dist && webpack --mode=production",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc --configure jsdoc.json --verbose"
   },
   "devDependencies": {
     "@types/aos": "^3.0.4",
@@ -14,6 +14,7 @@
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "autoprefixer": "^10.4.14",
     "better-docs": "^2.7.2",
+    "clean-jsdoc-theme": "^4.2.7",
     "css-loader": "^6.7.3",
     "dotenv-webpack": "^8.0.1",
     "eslint": "^8.0.1",
