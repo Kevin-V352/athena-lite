@@ -18,8 +18,9 @@ The project is in its last stage of development, so it may present some errors. 
 ## Prepare environment
 Install the necessary dependencies to transpile the source code using `yarn`
 
-## Scripts & Execute project locally
+## Scripts ⌨️
 | Command      | Description |
 | ----------- | ----------- |
 | `yarn start` | It generates a development server at: http://localhost:8080/ |
 | `yarn build` | It generates a **./dist** folder in the root of the project, where the static files needed for production are stored. |
+| `yarn docs`  | It generates a **./docs** folder with the documentation.

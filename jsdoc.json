@@ -1,0 +1,46 @@
+{
+  "opts": {
+    "encoding": "utf8",
+    "readme": "./README.md",
+    "destination": "./docs",
+    "recurse": true,
+    "verbose": true,
+    "template": "./node_modules/clean-jsdoc-theme",
+    "theme_opts": {
+      "default_theme": "dark",
+      "base_url": "./docs",
+      "favicon": "./src/assets/favicon.ico",
+      "homepageTitle": "ATHENA LITE | DOCS v1.0",
+      "title": "ATHENA LITE | DOCS v1.0",
+      "search": true,
+      "menu": [
+        {
+          "title": "GitHub",
+          "link": "https://github.com/Kevin-V352/athena-lite",
+          "target": "_blank"
+        },
+        {
+          "title": "Deploy",
+          "link": "https://athena-lite-kv357.netlify.app/",
+          "target": "_blank"
+        }
+      ]
+    }
+  },
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "include": ["./src"],
+    "includePattern": "\\.(js|ts)$",
+    "exlude": "node_modules/|docs"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/better-docs/typescript"
+  ],
+  "markdown": {
+    "hardwrap": false,
+    "idInHeadings": true
+  }
+}

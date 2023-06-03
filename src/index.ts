@@ -5,16 +5,20 @@ import './sass/app.scss';
 
 //* Bootstrap JS - ONLY JS MODULES
 import Modal from 'bootstrap/js/dist/modal';
-import Toast from 'bootstrap/js/dist/toast';
 
 //* Others
 import { type Photo } from 'pexels';
 
-//* Utils
-import { nodeModifiers, selectors } from './utils';
+//* Services
+import { images } from './services';
 
-//* APIs
-import { pexelsAPI } from './APIs';
+//* Utils
+import {
+  downloadManagers,
+  elementsGenerators,
+  nodeModifiers,
+  selectors
+} from './utils';
 
 //* Elements
 // ? Normally I would have all the elements of the document listed in this position, however,
@@ -26,137 +30,54 @@ const $bootstrapModal = new Modal((selectors.byId('previewModal') ?? ''), {});
 const $bootstrapModalContent = selectors.byId('previewModalContent') as HTMLDivElement | null;
 const $bootstrapToast = selectors.byId('alertToast') as HTMLDivElement | null;
 
-//* Constants
+//* Globals variables
+/**
+ * Current page number of the images.
+ * @var {number}
+ * @default 1
+ */
 let currentPage: number = 1;
+
+/**
+ * Search term for images.
+ * @var {string}
+ * @default Landscape
+ */
 let currentQuery: string = 'Landscape';
+
+/**
+ * Boolean that indicates if the image request process should be blocked.
+ * @var {boolean}
+ * @default false
+ */
 let lockRequests: boolean = false;
+
+/**
+ * Array where the user's search results are stored.
+ * @var {Array<Photo>}
+ * @default []
+ */
 let currentResults: Photo[] = [];
 
 //* Functions
-const getImages = async (query: string = 'Landscape', page: number = 1): Promise<{ data: Photo[] | null, error: any | null }> => {
-
-  try {
-
-    const response = await pexelsAPI.photos.search({
-      query,
-      page,
-      per_page: 18
-    });
-
-    if ('error' in response) return { data: null, error: response.error };
-
-    const { photos } = response;
-
-    return { data: photos, error: null };
-
-  } catch (error) {
-
-    console.error(error);
-    return { data: null, error };
-
-  };
-
-};
-
-const generateSinglePhoto = (src: Photo['src'], alt: string | null, id: number): string => (
-  `<img 
-    src="${src.large2x}" 
-    class="image-1--aspect-ratio image-1--selectable" 
-    alt="${alt ?? 'pexels-photo'}" 
-    data-aos="zoom-in" 
-    onclick="createAndOpenModal(${id})"
-  />`
-);
-
-const generateGalleryRows = (images: Photo[]): void => {
-
-  const $galleryGrid = selectors.byId('gallery-grid') as HTMLDivElement | null;
-
-  if (!$galleryGrid) return;
-
-  const options = [1, 2, 3];
-  const idx = Math.floor(Math.random() * options.length);
-  let rowTemplate = '';
-
-  const [photo1, photo2, photo3] = images;
-
-  switch (options[idx]) {
-
-    case 1:
-      rowTemplate = `
-        <div class="row gx-1 mb-1">
-
-          <div class="col-8">
-            ${generateSinglePhoto(photo1.src, photo1.alt, photo1.id)}
-          </div>
-
-          <div class="col-4">
-            <div class="d-flex flex-column gap-1">
-              ${photo2 ? generateSinglePhoto(photo2.src, photo2.alt, photo2.id) : ''}
-              ${photo3 ? generateSinglePhoto(photo3.src, photo3.alt, photo3.id) : ''}
-            </div>
-          </div>
-
-        </div>
-      `;
-      break;
-
-    case 2:
-      rowTemplate = `
-        <div class="row gx-1 mb-1">
-
-          <div class="col-4">
-            <div class="d-flex flex-column gap-1">
-              ${generateSinglePhoto(photo1.src, photo1.alt, photo1.id)}
-              ${photo2 ? generateSinglePhoto(photo2.src, photo2.alt, photo2.id) : ''}
-            </div>
-          </div>
-
-          <div class="col-8">
-            ${photo3 ? generateSinglePhoto(photo3.src, photo3.alt, photo3.id) : ''}
-          </div>
-
-        </div>
-    `;
-      break;
-
-    default:
-      rowTemplate = `
-        <div class="row mb-1 gx-1">
-
-          <div class="col-4">
-            ${generateSinglePhoto(photo1.src, photo1.alt, photo1.id)}
-          </div>
-
-          <div class="col-4">
-            ${photo2 ? generateSinglePhoto(photo2.src, photo2.alt, photo2.id) : ''}
-          </div>
-
-          <div class="col-4">
-            ${photo3 ? generateSinglePhoto(photo3.src, photo3.alt, photo3.id) : ''}
-          </div>
-
-        </div>
-      `;
-
-  };
-
-  $galleryGrid.innerHTML += (rowTemplate);
-
-};
-
+/**
+ * It triggers the action of searching for photos and loading them into the main grid.
+ * @async
+ * @param {string | undefined} query Search term.
+ */
 const loadGalleryRows = async (query?: string): Promise<void> => {
 
   if (lockRequests) return;
 
-  const { data: photos } = await getImages(query, currentPage);
+  const [photos] = await images.getImages(query, currentPage);
 
   //* Fetch error
   if (!photos) {
 
     lockRequests = true;
-    renderSpinner(false);
-    renderAlert(
+    elementsGenerators.renderSpinner(false, $mainContainer);
+    elementsGenerators.renderAlert(
+      $mainContainer,
       true,
       'fetch-error',
       'An error has occurred while trying to obtain the images. Please, check your internet connection and try again later'
@@ -169,8 +90,9 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
   if (photos.length === 0 && currentPage === 1) {
 
     lockRequests = true;
-    renderSpinner(false);
-    renderAlert(
+    elementsGenerators.renderSpinner(false, $mainContainer);
+    elementsGenerators.renderAlert(
+      $mainContainer,
       true,
       'no-results',
       'No results...'
@@ -183,7 +105,7 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
   if (photos.length <= 3) {
 
     lockRequests = true;
-    renderSpinner(false);
+    elementsGenerators.renderSpinner(false, $mainContainer);
 
   };
 
@@ -193,7 +115,7 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
   for (let i = 0; i < photos.length; i += 3) {
 
     const chunk = photos.slice(i, i + 3);
-    generateGalleryRows(chunk);
+    elementsGenerators.renderGalleryRows(chunk, 'gallery-grid');
 
   };
 
@@ -201,119 +123,23 @@ const loadGalleryRows = async (query?: string): Promise<void> => {
 
 };
 
-const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => {
-
-  try {
-
-    const blob = await fetch(url).then(async res => await res.blob());
-    return [URL.createObjectURL(blob), null];
-
-  } catch (error) {
-
-    console.error(error);
-    return [null, error];
-
-  };
-
-};
-
-const renderSpinner = (render: boolean): void => {
-
-  if (!$mainContainer) return;
-
-  const $spinnerExist = document.getElementById('spinner') as HTMLSpanElement | null;
-
-  if ($spinnerExist && render) return;
-  if (!$spinnerExist && !render) return;
-
-  if (render) $mainContainer.innerHTML += '<span class="text-light loader--spinner" id="spinner">A</span>';
-  else $spinnerExist?.remove();
-
-};
-
-const renderAlert = (render: boolean, type?: 'no-results' | 'fetch-error', message?: string): void => {
-
-  if (!$mainContainer) return;
-
-  const $alertDescription = selectors.byId('error-description') as HTMLSpanElement | null;
-  const $errorRetryButton = selectors.byId('error-retry-button') as HTMLButtonElement | null;
-
-  if (render && message) {
-
-    switch (type) {
-
-      case 'no-results':
-        $mainContainer.innerHTML += (`
-          <span 
-            class="my-3 error__description"
-            id="error-description"
-            data-aos="fade-up"
-            data-aos-once="false"
-          >
-            ${message}
-          </span>
-        `);
-        break;
-
-      default:
-        $mainContainer.innerHTML += (`
-          <span 
-            class="my-3 error__description"
-            id="error-description"
-            data-aos="fade-up"
-            data-aos-once="false"
-          >
-            ${message}
-          </span>
-        `);
-
-        $mainContainer.innerHTML += (`
-          <button 
-            class="mb-3 button-1 button-1--gradient" 
-            type="button"
-            id="error-retry-button"
-            onclick="retryLoadData()"
-            data-aos="fade-up"
-            data-aos-once="false"
-          > 
-            Retry
-          </button>
-        `);
-
-    };
-
-  } else {
-
-    $alertDescription?.remove();
-    $errorRetryButton?.remove();
-
-  };
-
-};
-
-const renderToast = (text: string, icon: string, iconVariant: string): void => {
-
-  if (!$bootstrapToast) return;
-
-  $bootstrapToast.innerHTML = (`
-    <i class="${iconVariant} ${icon} toast-1__type-icon"></i>
-    <span class="toast-1__text">${text}</span>
-  `);
-
-  const toastBootstrap = Toast.getOrCreateInstance($bootstrapToast);
-  toastBootstrap.show();
-
-};
-
+/**
+ * It triggers the initial content load.
+ * @async
+ */
 const initialLoad = async (): Promise<void> => {
 
   await loadGalleryRows(currentQuery);
-  renderSpinner(true);
+  elementsGenerators.renderSpinner(true, $mainContainer);
 
 };
 
-// @ts-expect-error
-window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
+/**
+ * It triggers image search when the user uses the search bar.
+ * @async
+ * @param {SubmitEvent} e Form event
+ */
+const searchPhotos = async (e: SubmitEvent): Promise<void> => {
 
   e.preventDefault();
 
@@ -334,41 +160,42 @@ window.searchPhotos = async (e: SubmitEvent): Promise<void> => {
   currentQuery = query;
   $searchPhotoForm.reset();
   nodeModifiers.removeAllChildNodes($galleryGrid);
-  renderAlert(false);
-  renderSpinner(true);
+  elementsGenerators.renderAlert($mainContainer, false);
+  elementsGenerators.renderSpinner(true, $mainContainer);
 
   //* Get and display
   await loadGalleryRows(query);
 
 };
 
-// @ts-expect-error
-window.downloadImage = async (url: string, alt: string): Promise<void> => {
+/**
+ * It downloads an image to the client device and triggers a notification if an error occurs.
+ * @async
+ * @param {string} url Link to the image to be saved on the client's device.
+ * @param {string} alt Name of the file to be saved on the client's device.
+ */
+const downloadImage = async (url: string, alt: string): Promise<void> => {
 
-  const [photoHref] = await toDataURL(url);
+  const success = await downloadManagers.downloadImageinClient(url, alt);
 
-  if (!photoHref) {
+  if (!success) {
 
-    renderToast(
+    elementsGenerators.renderToast(
       'An error has occurred while trying to download the image',
       'fa-triangle-exclamation',
-      'fa-solid'
+      'fa-solid',
+      $bootstrapToast
     );
-    return;
 
   };
 
-  const a = document.createElement('a');
-  a.href = photoHref;
-  a.download = alt;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
 };
 
-// @ts-expect-error
-window.createAndOpenModal = (id: number): void => {
+/**
+ * It opens a modal to download images.
+ * @param {number} id
+ */
+const openDownloadModal = (id: number): void => {
 
   if (!$bootstrapModalContent) return;
 
@@ -376,61 +203,29 @@ window.createAndOpenModal = (id: number): void => {
 
   if (photoToDownload == null) return;
 
-  const { alt, src: { large2x, original, large, medium, small, portrait, landscape, tiny } } = photoToDownload;
-
-  $bootstrapModalContent.innerHTML = (`
-    <img src="${large2x}" alt="${alt ?? 'large2x-photo-default'}" class="image-1--aspect-ratio" />
-    <div class="row gx-3">
-      <div class="col-xs-12 col-sm-6 mb-3 mb-sm-0">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${landscape}','${alt ? `${alt} - landscape` : 'landscape-photo-default'}')">Landscape</button>
-      </div>
-      <div class="col-xs-12 col-sm-6">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${large}','${alt ? `${alt} - large` : 'large-photo-default'}')">Large</button>
-      </div>
-    </div>
-    <div class="row gx-3">
-      <div class="col-xs-12 col-sm-6 mb-3 mb-sm-0">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${large2x}','${alt ? `${alt} - large2x` : 'large2x-photo-default'}')">Large 2X</button>
-      </div>
-      <div class="col-xs-12 col-sm-6">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${medium}','${alt ? `${alt} - medium` : 'medium-photo-default'}')">Medium</button>
-      </div>
-    </div>
-    <div class="row gx-3">
-      <div class="col-xs-12 col-sm-6 mb-3 mb-sm-0">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${original}','${alt ? `${alt} - original` : 'original-photo-default'}')">Original</button>
-      </div>
-      <div class="col-xs-12 col-sm-6">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${portrait}','${alt ? `${alt} - portrait` : 'portrait-photo-default'}')">Portrait</button>
-      </div>
-    </div>
-    <div class="row gx-3">
-      <div class="col-xs-12 col-sm-6 mb-3 mb-sm-0">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${small}','${alt ? `${alt} - small` : 'small-photo-default'}')">Small</button>
-      </div>
-      <div class="col-xs-12 col-sm-6">
-        <button class="button-1 button-1--outlined button-1--fluid" type="button" onclick="downloadImage('${tiny}','${alt ? `${alt} - tiny` : 'tiny-photo-default'}')">Tiny</button>
-      </div>
-    </div>
-    <button class="button-1 button-1--gradient" type="button" data-bs-dismiss="modal">Close</button>
-  `);
+  $bootstrapModalContent.innerHTML = elementsGenerators.generateDownloadModal(photoToDownload);
 
   $bootstrapModal.show();
 
 };
 
-// @ts-expect-error
-window.retryLoadData = async (): void => {
+/**
+ * It continues the image download process in case the download was paused due to a connection error.
+ * @async
+ */
+const retryLoadData = async (): Promise<void> => {
 
   lockRequests = false;
-  renderAlert(false);
+  elementsGenerators.renderAlert($mainContainer, false);
   await loadGalleryRows(currentQuery);
 
 };
 
-//* Listeners
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-window.addEventListener('scroll', async (): Promise<void> => {
+/**
+ * It triggers the generation of new images for the main grid when the user is at a specific position on the Y-axis of the screen.
+ * @async
+ */
+const infiniteScroll = async (): Promise<void> => {
 
   if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
 
@@ -438,7 +233,23 @@ window.addEventListener('scroll', async (): Promise<void> => {
 
   };
 
-});
+};
+
+// @ts-expect-error
+window.searchPhotos = searchPhotos;
+
+// @ts-expect-error
+window.downloadImage = downloadImage;
+
+// @ts-expect-error
+window.openDownloadModal = openDownloadModal;
+
+// @ts-expect-error
+window.retryLoadData = retryLoadData;
+
+//* Listeners
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+window.addEventListener('scroll', infiniteScroll);
 
 //* Initial load
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
