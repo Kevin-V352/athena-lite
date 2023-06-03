@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --open --mode=development",
     "build": "rimraf dist && webpack --mode=production",
-    "docs": "jsdoc --configure jsdoc.json --verbose"
+    "docs": "rimraf docs && jsdoc --configure jsdoc.json --verbose"
   },
   "devDependencies": {
     "@types/aos": "^3.0.4",
