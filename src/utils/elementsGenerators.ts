@@ -60,7 +60,7 @@ const generateDownloadModal = (photoToDownload: Photo): string => {
  * @param {Photo.src} src Photo link.
  * @param {string | null} alt Photo name.
  * @param {number} id Photo ID.
- * @returns {string} Returns an "img" element in string format.
+ * @returns {string} It returns an "img" element in string format.
  */
 const generateSinglePhoto = (src: Photo['src'], alt: string | null, id: number): string => (
   `<img 

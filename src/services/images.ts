@@ -11,7 +11,7 @@ import { pexelsAPI } from '../APIs';
  *  @async
  *  @param {string} query Search term.
  *  @param {number} page Page number.
- *  @returns {Promise<Array<Array.<Photo>, null>> | Promise<Array<null, any>>} Returns an array with two elements, the first element will have a list of objects (fetched from the pexels API) and the second an error (in case the request fails).
+ *  @returns {Promise<Array<Array.<Photo>, null>> | Promise<Array<null, any>>} It returns an array with two elements, the first element will have a list of objects (fetched from the pexels API) and the second an error (in case the request fails).
  */
 const getImages = async (query: string = 'Landscape', page: number = 1): Promise<[Photo[], null] | [null, any]> => {
 

@@ -193,7 +193,7 @@ const downloadImage = async (url: string, alt: string): Promise<void> => {
 
 /**
  * It opens a modal to download images.
- * @param {number} id
+ * @param {number} id Image ID (stored in recent searches).
  */
 const openDownloadModal = (id: number): void => {
 
@@ -201,7 +201,7 @@ const openDownloadModal = (id: number): void => {
 
   const photoToDownload = currentResults.find((photo) => photo.id === id);
 
-  if (photoToDownload == null) return;
+  if (!photoToDownload) return;
 
   $bootstrapModalContent.innerHTML = elementsGenerators.generateDownloadModal(photoToDownload);
 
