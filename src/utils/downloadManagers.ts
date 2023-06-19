@@ -1,9 +1,9 @@
 /** @module utils/downloadManagers */
 
 /**
- * Generates a link to facilitate downloading images to the client.
+ * It generates a link to facilitate downloading images to the client.
  * @param {string} url Image web link.
- * @returns {Promise<Array<string, null>> | Promise<Array<null, any>>} Returns a promise containing an array with two elements, the first element will have a link to facilitate image download (promise successfully resolved) and the second an error (in case the promise fails).
+ * @returns {Promise<Array<string, null>> | Promise<Array<null, any>>} It returns a promise containing an array with two elements, the first element will have a link to facilitate image download (promise successfully resolved) and the second an error (in case the promise fails).
  */
 const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => {
 
@@ -22,7 +22,7 @@ const toDataURL = async (url: string): Promise<[string, null] | [null, any]> => 
 };
 
 /**
- * Download an image to the client's device.
+ * It downloads an image to the client device.
  * @async
  * @param {string} url Link to the image to be saved on the client's device.
  * @param {string} alt Name of the file to be saved on the client's device.
