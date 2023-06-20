@@ -227,7 +227,7 @@ const retryLoadData = async (): Promise<void> => {
  */
 const infiniteScroll = async (): Promise<void> => {
 
-  if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+  if (Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight) {
 
     await loadGalleryRows(currentQuery);
 
