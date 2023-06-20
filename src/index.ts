@@ -7,7 +7,7 @@ import './sass/app.scss';
 import Modal from 'bootstrap/js/dist/modal';
 
 //* Others
-import { type Photo } from 'pexels';
+import { type Photo } from './interfaces';
 
 //* Services
 import { images } from './services';
@@ -227,7 +227,7 @@ const retryLoadData = async (): Promise<void> => {
  */
 const infiniteScroll = async (): Promise<void> => {
 
-  if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+  if (Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight) {
 
     await loadGalleryRows(currentQuery);
 

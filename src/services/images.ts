@@ -1,5 +1,6 @@
-//* Others
-import { type Photo } from 'pexels';
+/* eslint-disable @typescript-eslint/key-spacing */
+//* Interfaces
+import { type Photo, type PhotosResponse } from '../interfaces';
 
 //* APIs
 import { pexelsAPI } from '../APIs';
@@ -17,15 +18,16 @@ const getImages = async (query: string = 'Landscape', page: number = 1): Promise
 
   try {
 
-    const response = await pexelsAPI.photos.search({
-      query,
-      page,
-      per_page: 18
-    });
+    const requestOptions = {
+      method:  'GET',
+      headers: pexelsAPI.headers
+    };
 
-    if ('error' in response) return [null, response.error];
+    const response = await fetch(`${pexelsAPI.baseUrl}/search?query=${query}&page=${page}&per_page=18`, requestOptions);
 
-    const { photos } = response;
+    if (!response.ok) throw new Error('Error en la petición');
+
+    const { photos }: PhotosResponse = await response.json();
 
     return [photos, null];
 

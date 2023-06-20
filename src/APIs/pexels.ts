@@ -1,5 +1,16 @@
-import { createClient } from 'pexels';
+interface PexelsClientConfig {
+  baseUrl: string
+  headers: Headers
+};
 
-const client = createClient(process.env.PEXELS_API_KEY ?? '');
+const headers = new Headers();
+headers.append('Authorization', process.env.PEXELS_API_KEY ?? '');
+headers.append('Accept', 'application/json');
+headers.append('Content-Type', 'application/json');
 
-export default client;
+const clientConfig: PexelsClientConfig = {
+  baseUrl: 'https://api.pexels.com/v1',
+  headers
+};
+
+export default clientConfig;

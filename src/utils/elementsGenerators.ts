@@ -2,7 +2,7 @@
 import Toast from 'bootstrap/js/dist/toast';
 
 //* Others
-import { type Photo } from 'pexels';
+import { type Photo } from '../interfaces';
 
 import { selectors } from '.';
 
