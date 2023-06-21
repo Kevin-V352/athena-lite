@@ -7,6 +7,9 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 //ENV
 const Dotenv = require('dotenv-webpack');
 
+//TRANSFER
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 const path = require('path');
 
 const basePath = __dirname;
@@ -72,14 +75,22 @@ module.exports = {
     new HtmlWebpackPlugin({
       scriptLoading: 'blocking',
       template: './src/index.html',
-      favicon: './src/assets/favicon.ico'
+      favicon: './src/assets/icons/favicon.ico'
     }),
     new MiniCssExtractPlugin({
       filename: 'styles.css'
     }),
     new Dotenv({
       systemvars: true
-    })
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './src/assets/fontawesome',
+          to: './fontawesome',
+        },
+      ],
+    }),
   ],
   resolve: {
     //* Order resolution
