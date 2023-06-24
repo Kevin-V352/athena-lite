@@ -3,9 +3,6 @@ Simple page to search and download images. This project was born from the need t
 
 ![2](https://res.cloudinary.com/dqvjsgezk/image/upload/v1678800844/athena-lite-assets/mssbwkeiqadhqqk624at.gif)
 
-## In progress 🚧
-The project is in its last stage of development, so it may present some errors.
-
 ## Live demo
 [Let's go! 🌐](https://athena-lite-kv357.netlify.app/) 
 
