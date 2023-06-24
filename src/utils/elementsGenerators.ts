@@ -215,6 +215,14 @@ const renderAlert = (
 
   if (render && message) {
 
+    //* Protection against duplicate alerts
+    if ($alertDescription ?? $errorRetryButton) {
+
+      $alertDescription?.remove();
+      $errorRetryButton?.remove();
+
+    };
+
     switch (type) {
 
       case 'no-results':
@@ -240,9 +248,6 @@ const renderAlert = (
           >
             ${message}
           </span>
-        `);
-
-        $mainContainer.innerHTML += (`
           <button 
             class="mb-3 button-1 button-1--gradient" 
             type="button"
