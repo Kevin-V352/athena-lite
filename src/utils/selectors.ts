@@ -2,7 +2,7 @@
 
 /**
  * Short function to select DOM nodes.
- * @param id node ID.
+ * @param {string} id node ID.
  * @returns {HTMLElement | null} HTML element (if it exists).
  */
 const byId = (id: string): HTMLElement | null => document.getElementById(id);

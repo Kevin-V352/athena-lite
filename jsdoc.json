@@ -9,7 +9,7 @@
     "theme_opts": {
       "default_theme": "dark",
       "base_url": "./docs",
-      "favicon": "./src/assets/favicon.ico",
+      "favicon": "/src/assets/icons/favicon.ico",
       "homepageTitle": "ATHENA LITE | DOCS v1.0",
       "title": "ATHENA LITE | DOCS v1.0",
       "search": true,
